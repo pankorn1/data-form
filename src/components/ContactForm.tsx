@@ -1,135 +1,104 @@
-import { FC, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
-import { Action, Contact } from '..reducer/contactsReducer'
+// components/ContactForm.tsx
+import React, { useState, useEffect } from 'react';
+import { Button, TextField } from '@mui/material';
+import { Contact, useContact } from "../context/ContactContext";
 
 interface ContactFormProps {
-    dispatch: React.Dispatch<Action>;
-    dataToEdit: Contact | undefined;
-    toggleModal: () => void;
+  dataToEdit?: Contact;
 }
 
-const ContactForm: FC<ContactFormProps> = ({ dispatch, dataToEdit }) => {
+const ContactForm: React.FC<ContactFormProps> = ({ dataToEdit }) => {
+  const { dispatch } = useContact();
+  const [contact, setContact] = useState<Contact>({
+    id: '',
+    firstName: '',
+    lastName: '',
+    age: '',
+    gender: '',
+    phone: '',
+    address: '',
+  });
 
-    const [contact, setContact] = useState({
-        firstName:'',
-        lastName:'',
-        id:'',
-        age:'',
-        gender:'',
-        phone:'',
-        address:'',
-    })
-
-    console.log(contact.firstName)
-
-    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value } = event.target
-        setContact((prevState) => {
-            return {
-                ...prevState,
-                [name]: value
-            }
-        })
+  useEffect(() => {
+    if (dataToEdit) {
+      setContact(dataToEdit);
     }
+  }, [dataToEdit]);
 
-    const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        dispatch({
-            type:"ADD_CONTACT",
-            paylond: contact
-        })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContact({
+      ...contact,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (contact.id) {
+      dispatch({ type: 'EDIT_CONTACT', payload: contact });
+    } else {
+      dispatch({ type: 'ADD_CONTACT', payload: contact });
     }
+    setContact({
+      id: '',
+      firstName: '',
+      lastName: '',
+      age: '',
+      gender: '',
+      phone: '',
+      address: '',
+    });
+  };
 
   return (
-    <Form className='contact-form' onSubmit={handleOnSubmit}>
-        <Form.Group controlId='firstName'>
-            <Form.Label>First Name</Form.Label>
-            <Form.Control 
-                className='firstName'
-                name='firstName'
-                value={contact.firstName}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
+    <form onSubmit={handleSubmit}>
+      <TextField
+        label="First Name"
+        name="firstName"
+        value={contact.firstName}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        label="Last Name"
+        name="lastName"
+        value={contact.lastName}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        label="Age"
+        name="age"
+        value={contact.age}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        label="Gender"
+        name="gender"
+        value={contact.gender}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        label="Phone"
+        name="phone"
+        value={contact.phone}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        label="Address"
+        name="address"
+        value={contact.address}
+        onChange={handleChange}
+        fullWidth
+      />
+      <Button type="submit" variant="contained" color="primary">
+        {contact.id ? 'Edit Contact' : 'Add Contact'}
+      </Button>
+    </form>
+  );
+};
 
-        <Form.Group controlId='lastName'>
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control 
-                className='lastName'
-                name='lastName'
-                value={contact.lastName}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
-
-        <Form.Group controlId='id'>
-            <Form.Label>ID</Form.Label>
-            <Form.Control 
-                className='id'
-                name='id'
-                value={contact.id}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
-
-        <Form.Group controlId='age'>
-            <Form.Label>Age</Form.Label>
-            <Form.Control 
-                className='age'
-                name='age'
-                value={contact.age}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
-
-        <Form.Group controlId='gender'>
-            <Form.Label>Gender</Form.Label>
-            <Form.Control 
-                className='gender'
-                name='gender'
-                value={contact.gender}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
-
-        <Form.Group controlId='phone'>
-            <Form.Label>Phone</Form.Label>
-            <Form.Control 
-                className='phone'
-                name='phone'
-                value={contact.phone}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
-
-
-        <Form.Group controlId='address'>
-            <Form.Label>Address</Form.Label>
-            <Form.Control 
-                className='address'
-                name='address'
-                value={contact.address}
-                type='text'
-                onChange={handleOnChange}
-            />
-        </Form.Group>
-
-        <Form.Group controlId='submit' className='mt-4'>
-            <Button variant='primary' 
-            type='submit'
-            className='submit'>
-                Add Contact
-            </Button>
-        </Form.Group>
-    
-    </Form>
-  )
-}
-
-export default ContactForm
+export default ContactForm;

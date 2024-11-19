@@ -1,58 +1,63 @@
-import { useReducer, useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.tsx
+import React, { useState, useEffect } from 'react';
+import './App.css';
 
-//Reducer
-import { contactsReducer, State, Contact } from './reducer/contactsReducer'
+// Context
+import { useContact, ContactProvider, Contact } from './context/ContactContext';
+// Components
+import Header from './components/Header';
+import ContactForm from './components/ContactForm';
+import ContactList from './components/ContactList';
+import EditModal from './components/EditModal';
 
-// Compnents
-import Header from './components/Header'
-import ContactForm from './components/ContactForm'
-import ContactList from './components/ContactList'
-import EditModal from './components/EditModal'
-
-const intialState: State = {
-  contacts: []
-}
-
-function App() {
-  const [state, dispatch] = useReducer(contactsReducer, intialState)
+function AppContent() {
+  const { state: { contacts }, dispatch } = useContact(); // ดึงข้อมูลจาก Context
   const [showModal, setShowModal] = useState(false);
   const [dataToEdit, setDataToEdit] = useState<Contact | undefined>(undefined);
 
   useEffect(() => {
     if (!showModal) {
-      setDataToEdit(undefined)
+      setDataToEdit(undefined); // เคลียร์ข้อมูลที่จะแก้ไขเมื่อ modal ปิด
     }
-  }, [showModal])
+  }, [showModal]);
 
   const toggleModal = () => {
-    setShowModal((show) => !show)
-  }
+    setShowModal((prevShow) => !prevShow); // เปลี่ยนสถานะการแสดงผล modal
+  };
 
-  const handleEdit = (id: number) => {
-    setDataToEdit(state.contacts.find((contact) => contact.id ===id))
-    toggleModal();
-  }
-
-  console.log('state', state)
+  const handleEdit = (id: string) => {
+    const contactToEdit = contacts.find((contact) => contact.id === id); // ค้นหาข้อมูลที่ต้องการแก้ไข
+    if (contactToEdit) {
+      setDataToEdit(contactToEdit); // กำหนดข้อมูลที่จะแก้ไข
+      toggleModal(); // เปิด modal
+    }
+  };
 
   return (
-    <div className='container mt-4'>
-      <Header />
-      <ContactForm dispatch={dispatch} dataToEdit={dataToEdit} toggleModal={toggleModal} />
+    <div className="container mt-4">
+      <Header /> {/* แสดงหัวข้อ */}
+      <ContactForm dataToEdit={dataToEdit} dispatch={dispatch} /> {/* ฟอร์มเพิ่ม/แก้ไขข้อมูล */}
       <hr />
-      {state.contacts.length > 0 && <ContactList contacts={state.contacts} handleEdit={handleEdit} dispatch={dispatch} />}
-      <EditModal 
-        showModal={showModal}
-        dataToEdit={dataToEdit}
-        toggleModal={toggleModal}
+      {contacts.length > 0 && (
+        <ContactList contacts={contacts} handleEdit={handleEdit} dispatch={dispatch} /> 
+      )}
+      <EditModal
+        showModal={showModal} // สถานะการแสดงผลของ modal
+        dataToEdit={dataToEdit} // ข้อมูลที่จะแก้ไขใน modal
+        toggleModal={toggleModal} // ฟังก์ชันในการปิด/เปิด modal
         dispatch={dispatch}
-
       />
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <ContactProvider> {/* ให้ Context รอบ AppContent */}
+      <AppContent />
+    </ContactProvider>
+  );
+}
+
+export default App;
+
