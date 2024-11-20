@@ -1,14 +1,10 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
-import { Contact } from '../context/ContactContext';
+import { useContact } from "../context/ContactContext";  // ใช้ context
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-interface ContactListProps {
-  contacts: Contact[];
-  handleEdit: (id: string) => void;
-  dispatch: React.Dispatch<any>;
-}
+const ContactTable: React.FC = () => {
+  const { contacts } = useContact();  // ดึงข้อมูล contacts จาก context
 
-const ContactList: React.FC<ContactListProps> = ({ contacts, handleEdit, dispatch }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -20,7 +16,6 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, handleEdit, dispatc
             <TableCell>Gender</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Address</TableCell>
-            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -32,11 +27,6 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, handleEdit, dispatc
               <TableCell>{contact.gender}</TableCell>
               <TableCell>{contact.phone}</TableCell>
               <TableCell>{contact.address}</TableCell>
-              <TableCell>
-                <Button variant="contained" color="primary" onClick={() => handleEdit(contact.id)}>
-                  Edit
-                </Button>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -45,4 +35,4 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, handleEdit, dispatc
   );
 };
 
-export default ContactList;
+export default ContactTable;

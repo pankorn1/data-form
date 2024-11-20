@@ -1,4 +1,3 @@
-// components/ContactForm.tsx
 import React, { useState, useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
 import { Contact, useContact } from "../context/ContactContext";

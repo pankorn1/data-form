@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import { AiFillDelete } from 'react-icons/ai'
-import{ Action, Contact } from '../reducer/contactsReducer'
-
+import { Contact, useContact } from "../context/ContactContext";
 interface ExtraProps {
     handleEdit: (id: number) => void;
     dispatch: React.Dispatch<Action>
