@@ -1,7 +1,7 @@
-// context/ContactContext.tsx
+
 import React, { createContext, useContext, useReducer } from 'react';
 
-// Type Definition for Contact
+
 export interface Contact {
   id: string;
   firstName: string;
@@ -12,23 +12,23 @@ export interface Contact {
   address: string;
 }
 
-// Reducer Actions
+
 type Action =
   | { type: 'ADD_CONTACT'; payload: Contact }
   | { type: 'EDIT_CONTACT'; payload: Contact }
   | { type: 'DELETE_CONTACT'; payload: string };
 
-// State Shape
+
 interface State {
   contacts: Contact[];
 }
 
-// Initial State
+
 const initialState: State = {
   contacts: [],
 };
 
-// Reducer Function
+
 const contactsReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_CONTACT':
@@ -50,10 +50,10 @@ const contactsReducer = (state: State, action: Action): State => {
   }
 };
 
-// Context Creation
+
 const ContactContext = createContext<{ state: State; dispatch: React.Dispatch<Action> } | undefined>(undefined);
 
-// Custom Hook to Access Context
+
 export const useContact = () => {
   const context = useContext(ContactContext);
   if (!context) {
@@ -62,7 +62,7 @@ export const useContact = () => {
   return context;
 };
 
-// Context Provider Component
+
 export const ContactProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(contactsReducer, initialState);
 

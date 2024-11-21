@@ -1,9 +1,9 @@
 import React from 'react';
-import { useContact } from "../context/ContactContext";  // ใช้ context
+import { useContact } from "../context/ContactContext"; 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const ContactTable: React.FC = () => {
-  const { contacts } = useContact();  // ดึงข้อมูล contacts จาก context
+  const { contacts } = useContact();  
 
   return (
     <TableContainer component={Paper}>
